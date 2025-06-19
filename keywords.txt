@@ -1,0 +1,11 @@
+2P2KEjdUqlI9quQH0ODXVYlQb5JVT4F5+R0U8guxE7u+J5K6Sd51uQ== -> key for hey apollo -> dashboard
+
+iFKjiqvfGAang4Gv2Q32o6kA4LfMgY5W4Pfp2vX3KFRDZ5T5mj5Oow== -> key for patient progress
+
+iyBDpOxuU5qOGP7t8wfrjhjH9XDzPFfQPjr1oteJ5XvIvxzEdHkMPQ==  -> key for show videos  
+
+7F+2pY3/+L8OYrumcXb8GZ6uqmBuB2PNn6fPbXoNNx1FfIben/5JRw==  -> key for show progress
+
+('index.html', 'show dashboard', '/home/sabeshraaj/Desktop/Demo/wakewords/hey-apollo.ppn', '2P2KEjdUqlI9quQH0ODXVYlQb5JVT4F5+R0U8guxE7u+J5K6Sd51uQ=='),
+('patient_progress.html', 'patient progress', '/home/sabeshraaj/Desktop/Demo/wakewords/patient-progress.ppn', 'iFKjiqvfGAang4Gv2Q32o6kA4LfMgY5W4Pfp2vX3KFRDZ5T5mj5Oow=='),
+('demonstration.html', 'show videos', '/home/sabeshraaj/Desktop/Demo/wakewords/show-videos.ppn', 'iyBDpOxuU5qOGP7t8wfrjhjH9XDzPFfQPjr1oteJ5XvIvxzEdHkMPQ==')
