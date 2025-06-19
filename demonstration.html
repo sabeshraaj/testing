@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mezoi Healthcare - Product Awareness Videos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-darkest: #003A6B;
+            --color-dark: #1B5886;
+            --color-medium: #3776A1;
+            --color-light: #5293B8;
+            --color-lighter: #6EBDD6;
+            --color-lightest: #89CFF1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .main-title {
+            color: var(--color-darkest);
+            font-weight: 700;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--color-darkest), var(--color-medium));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(0, 58, 107, 0.3);
+        }
+
+        .subtitle {
+            color: var(--color-medium);
+            font-size: 1.3rem;
+            text-align: center;
+            margin-bottom: 60px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+            margin-bottom: 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 58, 107, 0.2);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 220px;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .video-thumbnail:hover::before {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .play-button {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-darkest);
+            font-size: 28px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            position: relative;
+        }
+
+        .play-button:hover {
+            background: white;
+            transform: scale(1.15);
+            box-shadow: 0 12px 35px rgba(0, 58, 107, 0.3);
+        }
+
+        .video-info {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .video-title {
+            color: var(--color-darkest);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .video-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .video-duration {
+            color: var(--color-medium);
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: var(--color-lightest);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .video-element {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .video-thumbnail.playing .video-element {
+            display: block;
+        }
+
+        .video-thumbnail.playing .play-button {
+            display: none;
+        }
+
+        /* Lightbox Styles */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+        }
+
+        .lightbox-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 800px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .lightbox-video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: #333;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lightbox-close:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .lightbox-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 30px 20px 20px;
+        }
+
+        .lightbox-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .lightbox-description {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .video-thumbnail {
+                height: 180px;
+            }
+
+            .lightbox-container {
+                width: 95vw;
+                max-height: 80vh;
+            }
+
+            .lightbox-info {
+                padding: 20px 15px 15px;
+            }
+
+            .lightbox-title {
+                font-size: 1.1rem;
+            }
+
+            .lightbox-description {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid main-container">
+        <h1 class="main-title">MEZOI</h1>
+        <p class="subtitle">Learn how to use our healthcare monitoring system</p>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="video-card">
+                    <div class="video-thumbnail" style="background: linear-gradient(135deg, #003A6B, #3776A1);">
+                        <video src="videos/What is quality of care_.mp4" class="video-element" preload="metadata"></video>
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h6 class="video-title">Getting Started with Mezoi</h6>
+                        <p class="video-description">An introduction to the Mezoi healthcare monitoring system and its key features for patient care.</p>
+                        <span class="video-duration">Duration: 2:56</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="video-card">
+                    <div class="video-thumbnail" style="background: linear-gradient(135deg, #1B5886, #5293B8);">
+                        <video src="videos/What is Trauma-Informed Care_.mp4" class="video-element" preload="metadata"></video>
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h6 class="video-title">Dashboard Overview</h6>
+                        <p class="video-description">Navigate through the main dashboard and understand the monitoring interface for effective patient management.</p>
+                        <span class="video-duration">Duration: 3:33</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="video-card">
+                    <div class="video-thumbnail" style="background: linear-gradient(135deg, #3776A1, #6EBDD6);">
+                        <video src="videos/WHO_ Guardian of Health.mp4" class="video-element" preload="metadata"></video>
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h6 class="video-title">Patient Monitoring Basics</h6>
+                        <p class="video-description">Learn the fundamentals of monitoring patient vital signs and interpreting the data effectively.</p>
+                        <span class="video-duration">Duration: 2:01</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <div class="lightbox-container">
+            <button class="lightbox-close" id="lightboxClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <video class="lightbox-video" id="lightboxVideo" controls></video>
+            <div class="lightbox-info">
+                <div class="lightbox-title" id="lightboxTitle"></div>
+                <div class="lightbox-description" id="lightboxDescription"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // WebSocket connection for navigation
+        let socket;
+        
+        function getWebSocketURL() {
+            const host = window.location.hostname;
+            const port = 8080;
+            return `ws://${host}:${port}`;
+        }
+        
+        function connectWebSocket() {
+            const wsUrl = getWebSocketURL();
+            console.log("Connecting to WebSocket:", wsUrl);
+            socket = new WebSocket(wsUrl);
+            
+            socket.onopen = () => {
+                console.log("WebSocket connected successfully to:", wsUrl);
+            };
+            
+            socket.onmessage = (event) => {
+                console.log("WebSocket message received:", event.data);
+                try {
+                    const data = JSON.parse(event.data);
+                    console.log("Parsed data:", data);
+                    
+                    if (data.type === "navigate") {
+                        console.log("Navigating to:", data.page);
+                        window.location.href = data.page;
+                    }
+                } catch (e) {
+                    console.log("Failed to parse JSON, treating as plain text:", event.data);
+                }
+            };
+            
+            socket.onclose = (event) => {
+                console.log("WebSocket closed:", event.code, event.reason);
+                setTimeout(() => {
+                    console.log("Attempting to reconnect...");
+                    connectWebSocket();
+                }, 1000);
+            };
+            
+            socket.onerror = (err) => {
+                console.error("WebSocket error:", err);
+            };
+        }
+        
+        // Connect when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Page loaded, connecting WebSocket...");
+            connectWebSocket();
+        });
+        // Lightbox elements
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxVideo = document.getElementById('lightboxVideo');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const lightboxTitle = document.getElementById('lightboxTitle');
+        const lightboxDescription = document.getElementById('lightboxDescription');
+
+        // Video play logic with lightbox
+        document.querySelectorAll('.video-thumbnail').forEach(thumbnail => {
+            const video = thumbnail.querySelector('video');
+            const playBtn = thumbnail.querySelector('.play-button');
+            const videoCard = thumbnail.closest('.video-card');
+            const title = videoCard.querySelector('.video-title').textContent;
+            const description = videoCard.querySelector('.video-description').textContent;
+
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Stop all other videos (existing functionality)
+                document.querySelectorAll('.video-thumbnail').forEach(other => {
+                    if (other !== thumbnail) {
+                        const otherVideo = other.querySelector('video');
+                        if (otherVideo) {
+                            otherVideo.pause();
+                            other.classList.remove('playing');
+                        }
+                    }
+                });
+
+                // Open lightbox instead of playing inline
+                openLightbox(video.src, title, description);
+            });
+
+            video.addEventListener('click', () => {
+                video.pause();
+                thumbnail.classList.remove('playing');
+            });
+        });
+
+        // Lightbox functions
+        function openLightbox(videoSrc, title, description) {
+            lightboxVideo.src = videoSrc;
+            lightboxTitle.textContent = title;
+            lightboxDescription.textContent = description;
+            lightboxOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightboxVideo.pause();
+            lightboxVideo.src = '';
+            lightboxOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close lightbox events
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        lightboxOverlay.addEventListener('click', (e) => {
+            if (e.target === lightboxOverlay) {
+                closeLightbox();
+            }
+        });
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
